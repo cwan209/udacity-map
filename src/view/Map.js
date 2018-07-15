@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import scriptLoader from 'react-async-script-loader'
 import { API_KEY } from "../model/constants";
 import { MELBOURNE_CENTRAL } from "../model/constants";
-import { INITIAL_MARKERS } from "../model/constants";
 
 const mapStyle = {
     width: '100%',
@@ -39,7 +38,9 @@ class Map extends Component {
     }
 
     loadMarkers = () => {
-        INITIAL_MARKERS.map( initial_marker => {
+        const { locations } = this.props;
+
+        locations.map( initial_marker => {
             let marker = new window.google.maps.Marker({
                 position: initial_marker.position,
                 map: this.map,
@@ -58,7 +59,7 @@ class Map extends Component {
 
     render() {
         return (
-                <div ref="map" style={mapStyle}/>
+            <div ref="map" style={mapStyle}/>
         );
     }
 }
