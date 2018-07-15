@@ -14,6 +14,7 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.map = null;
+        this.infoWindow = null;
     }
 
     componentDidMount() {
@@ -23,8 +24,11 @@ class Map extends Component {
     componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed }) {
         if (isScriptLoaded && !this.props.isScriptLoaded) { // load finished
             if (isScriptLoadSucceed) {
+
+                this.infowindow = new window.google.maps.InfoWindow();
+
                 this.loadMap();
-                this.loadMarkers();
+                this.loadNearestLocations();
             }
             else this.props.onError()
         }
@@ -37,25 +41,40 @@ class Map extends Component {
         });
     }
 
-    loadMarkers = () => {
-        const { locations } = this.props;
-
-        locations.map( initial_marker => {
-            let marker = new window.google.maps.Marker({
-                position: initial_marker.position,
-                map: this.map,
-                title: initial_marker.title
-            })
-
-            const infowindow = new window.google.maps.InfoWindow({
-                content: initial_marker.title
-            });
-
-            marker.addListener('click', function() {
-                infowindow.open(this.map, marker);
-            });
-        })
+    loadNearestLocations = () => {
+        const service = new window.google.maps.places.PlacesService(this.map);
+        service.nearbySearch({
+            location: MELBOURNE_CENTRAL,
+            radius: 500,
+            // type: ['store']
+        }, this.callback);
     }
+
+    callback = (results, status) => {
+
+        const { setPlaces } = this.props;
+        setPlaces(results);
+
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            for (let i = 0; i < results.length; i++) {
+                this.createMarker(results[i]);
+            }
+        }
+    }
+
+    createMarker = (place) => {
+        const placeLoc = place.geometry.location;
+        const marker = new window.google.maps.Marker({
+            map: this.map,
+            position: place.geometry.location
+        });
+
+        window.google.maps.event.addListener(marker, 'click', function() {
+            this.infowindow.setContent(place.name);
+            this.infowindow.open(this.map, this);
+        });
+    }
+
 
     render() {
         return (
@@ -66,4 +85,4 @@ class Map extends Component {
 
 Map.propTypes = {};
 
-export default scriptLoader(['https://maps.googleapis.com/maps/api/js?key=' + API_KEY])(Map)
+export default scriptLoader(['https://maps.googleapis.com/maps/api/js?key=' + API_KEY + '&libraries=places'])(Map)

@@ -14,21 +14,29 @@ class App extends Component {
 
         this.state = {
             counter: 0,
-            locations: INITIAL_MARKERS
+            places: []
         };
     }
 
+    setPlaces = places => {
+        this.setState({ places: places})
+        console.log(this.state.places);
+    }
+
     render() {
-        const { locations } = this.state;
+        const { places } = this.state;
 
         return (
             <div className="App">
                 <Grid container>
                     <Grid item xs={3}>
-                        <LocationList locations={locations}/>
+                        <LocationList places={places}/>
                     </Grid>
                     <Grid item xs={9}>
-                        <Map locations={locations}/>
+                        <Map
+                            places={places}
+                            setPlaces={this.setPlaces}
+                        />
                     </Grid>
                 </Grid>
             </div>

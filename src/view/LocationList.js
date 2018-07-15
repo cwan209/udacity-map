@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
 import { List, ListItem, ListItemText, Input, FormControl, InputLabel, InputAdornment, TextField} from '@material-ui/core';
 
 class LocationList extends Component {
@@ -18,7 +17,7 @@ class LocationList extends Component {
     }
 
     render() {
-        const { locations } = this.props;
+        const { places } = this.props;
         const { keyword } = this.state;
 
         return (
@@ -42,9 +41,9 @@ class LocationList extends Component {
                 </FormControl>
                 <List component="nav">
                 {
-                    locations.map((location, index) =>
+                    places.map((place, index) =>
                         <ListItem button key={index}>
-                            <ListItemText primary={location.title} />
+                            <ListItemText primary={place.name} />
                         </ListItem>
                     )
                 }
