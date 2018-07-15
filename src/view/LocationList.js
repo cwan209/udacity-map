@@ -16,6 +16,14 @@ class LocationList extends Component {
 
     }
 
+    onChangeKeyword = event => {
+        const { filterByKeyword } = this.props;
+        const keyword = event.target.value;
+
+        this.setState({ keyword: keyword});
+        filterByKeyword(keyword);
+    }
+
     render() {
         const { places } = this.props;
         const { keyword } = this.state;
@@ -28,7 +36,7 @@ class LocationList extends Component {
                         label="Native select"
                         // className={classes.textField}
                         value={keyword}
-                        onChange={event => this.setState({ keyword: event.target.value})}
+                        onChange={event => this.onChangeKeyword(event)}
                         // SelectProps={{
                         //     native: true,
                         //     MenuProps: {

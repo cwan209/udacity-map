@@ -14,11 +14,14 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.map = null;
-        this.infoWindow = null;
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
+        const { places } = this.props;
 
+        places.map( place => {
+            this.createMarkerAndInfoWindow(place);
+        })
     }
 
     componentWillReceiveProps ({ isScriptLoaded, isScriptLoadSucceed }) {
@@ -52,29 +55,31 @@ class Map extends Component {
 
     callback = (results, status) => {
 
-        const { setPlaces } = this.props;
-        setPlaces(results);
+        const { setInitialPlaces } = this.props;
+        setInitialPlaces(results);
 
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             for (let i = 0; i < results.length; i++) {
-                this.createMarker(results[i]);
+                this.createMarkerAndInfoWindow(results[i]);
             }
         }
     }
 
-    createMarker = (place) => {
+    createMarkerAndInfoWindow = (place) => {
         const placeLoc = place.geometry.location;
         const marker = new window.google.maps.Marker({
             map: this.map,
             position: place.geometry.location
         });
 
-        window.google.maps.event.addListener(marker, 'click', function() {
-            this.infowindow.setContent(place.name);
-            this.infowindow.open(this.map, this);
+        const infowindow = new window.google.maps.InfoWindow({
+            content: place.name
+        });
+
+        marker.addListener('click', function() {
+            infowindow.open(this.map, marker);
         });
     }
-
 
     render() {
         return (
