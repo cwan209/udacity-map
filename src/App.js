@@ -4,6 +4,8 @@ import './App.css';
 import Map from "./view/Map";
 import LocationList from "./view/LocationList";
 import { INITIAL_MARKERS } from "./model/constants";
+import Grid from '@material-ui/core/Grid';
+
 
 class App extends Component {
 
@@ -21,8 +23,14 @@ class App extends Component {
 
         return (
             <div className="App">
-                <Map locations={locations}/>
-                <LocationList locations={locations}/>
+                <Grid container>
+                    <Grid item xs={3}>
+                        <LocationList locations={locations}/>
+                    </Grid>
+                    <Grid item xs={9}>
+                        <Map locations={locations}/>
+                    </Grid>
+                </Grid>
             </div>
         );
     }
