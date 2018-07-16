@@ -16,10 +16,17 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.map = null;
+        this.markers = [];
+
     }
 
     componentDidUpdate() {
         const {places} = this.props;
+
+        // reset markers
+        this.markers.forEach( marker => {
+            marker.setMap(null);
+        })
 
         places.map(place => {
             this.createMarkerAndInfoWindow(place);
@@ -42,7 +49,7 @@ class Map extends Component {
     loadMap = () => {
         this.map = new window.google.maps.Map(this.refs.map, {
             center: MELBOURNE_CENTRAL,
-            zoom: 14
+            zoom: 16
         });
     };
 
@@ -67,19 +74,11 @@ class Map extends Component {
         }
     };
 
-    toggleBounce = (marker) => {
-        if (marker.getAnimation() !== null) {
-            marker.setAnimation(null);
-        } else {
-            marker.setAnimation(window.google.maps.Animation.BOUNCE);
-        }
-    }
-
     createMarkerAndInfoWindow = (place) => {
         const placeLoc = place.geometry.location;
         const marker = new window.google.maps.Marker({
             map: this.map,
-            position: place.geometry.location,
+            position: placeLoc,
             animation: window.google.maps.Animation.DROP,
         });
 
@@ -95,11 +94,14 @@ class Map extends Component {
             content: place.name
         });
 
+
         // this.fetchImage(place);
 
         marker.addListener('click', function () {
             infowindow.open(this.map, marker);
         });
+        this.markers.push(marker);
+
     };
 
     fetchImage = place => {

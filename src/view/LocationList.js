@@ -33,7 +33,7 @@ class LocationList extends Component {
                 <FormControl fullWidth className="Filter">
                     <TextField
                         id="select-currency-native"
-                        label="Native select"
+                        label="Please search"
                         // className={classes.textField}
                         value={keyword}
                         onChange={event => this.onChangeKeyword(event)}
@@ -43,7 +43,7 @@ class LocationList extends Component {
                         //         className: classes.menu,
                         //     },
                         // }}
-                        helperText="Please filter"
+                        helperText="Type in place name or type"
                         margin="normal"
                     />
                 </FormControl>
