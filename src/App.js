@@ -50,7 +50,7 @@ class App extends Component {
                     console.log(hasKeyword)
                     return hasKeyword;
                 }
-                
+
             })
             this.setState({places: filteredPlaces});
         } else {
