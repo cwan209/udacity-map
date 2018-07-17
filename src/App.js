@@ -5,6 +5,7 @@ import Map from "./view/Map";
 import LocationList from "./view/LocationList";
 import {INITIAL_MARKERS} from "./model/constants";
 import Grid from '@material-ui/core/Grid';
+import ErrorModal from "./view/Modal";
 
 
 class App extends Component {
@@ -15,9 +16,18 @@ class App extends Component {
         this.state = {
             counter: 0,
             places: [],
-            initialPlaces: []
+            initialPlaces: [],
+            isModalOpen: false,
         };
     }
+
+    handleOpen = () => {
+        this.setState({ isModalOpen: true });
+    };
+
+    handleClose = () => {
+        this.setState({ isModalOpen: false });
+    };
 
     setInitialPlaces = places => {
         this.setState({initialPlaces: places}, () => {
@@ -59,7 +69,7 @@ class App extends Component {
     }
 
     render() {
-        const {places} = this.state;
+        const {places, isModalOpen} = this.state;
 
         return (
             <div className="App">
@@ -74,9 +84,15 @@ class App extends Component {
                         <Map
                             places={places}
                             setInitialPlaces={this.setInitialPlaces}
+                            handleOpen={this.handleOpen}
+                            isModalOpen={isModalOpen}
                         />
                     </Grid>
                 </Grid>
+                <ErrorModal
+                    handleClose={this.handleClose}
+                    isModalOpen={isModalOpen}
+                />
             </div>
         );
     }

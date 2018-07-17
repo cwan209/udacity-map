@@ -8,7 +8,7 @@ import {CLIENT_SECRET} from "../model/constants";
 
 const mapStyle = {
     width: '100%',
-    height: 800,
+    height: 1000,
 }
 
 class Map extends Component {
@@ -23,8 +23,10 @@ class Map extends Component {
     componentDidUpdate() {
         const {places} = this.props;
 
+        console.log('componentDidUpdate')
+
         // reset markers
-        this.markers.forEach( marker => {
+        this.markers.forEach(marker => {
             marker.setMap(null);
         })
 
@@ -36,14 +38,18 @@ class Map extends Component {
     componentWillReceiveProps({isScriptLoaded, isScriptLoadSucceed}) {
         if (isScriptLoaded && !this.props.isScriptLoaded) { // load finished
             if (isScriptLoadSucceed) {
-
                 this.infowindow = new window.google.maps.InfoWindow();
 
                 this.loadMap();
                 this.loadNearestLocations();
+
             }
             else this.props.onError()
         }
+    }
+
+    componentDidMount() {
+
     }
 
     loadMap = () => {
@@ -90,39 +96,58 @@ class Map extends Component {
             }
         });
 
-        const infowindow = new window.google.maps.InfoWindow({
-            content: place.name
+        this.fetchVenueDetails(place).then(venue => {
+
+            if (typeof venue === 'undefined') {
+                return
+            }
+            const formattedPhone = venue.contact.formattedPhone;
+            const name = venue.name;
+            let photoHTML = '';
+            if (venue.hasOwnProperty('bestPhoto')) {
+                const photoUrl = venue.bestPhoto.prefix + '400x300' + venue.bestPhoto.suffix;
+                photoHTML = '<img src="' + photoUrl + '" alt="' + name + '"/>';
+            }
+            const rating = venue.rating;
+
+            const contentString =
+                '<div id="content">' +
+                '<h1 id="firstHeading" class="firstHeading">' + name + '</h1>' +
+                '<div id="bodyContent">' +
+                photoHTML +
+                '<p>Rating: ' + rating + '</p>' +
+                '<p>Contact Number: ' + formattedPhone + '</p>' +
+                '</div>' +
+                '</div>';
+
+            const infowindow = new window.google.maps.InfoWindow({
+                content: contentString
+            });
+
+            marker.addListener('click', function () {
+                infowindow.open(this.map, marker);
+            });
+
+            this.markers.push(marker);
+        }).catch(error => {
+            console.error(error);
         });
-
-
-        // this.fetchImage(place);
-
-        marker.addListener('click', function () {
-            infowindow.open(this.map, marker);
-        });
-        this.markers.push(marker);
-
     };
 
-    fetchImage = place => {
-
-        this.searchByLocation(place).then(id => {
+    fetchVenueDetails = place => {
+        return this.searchByLocation(place).then(id => {
             const url = "https://api.foursquare.com/v2/venues/" + id
                 + '?&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '&v=20180715';
 
             return fetch(url, {
-                        method: "GET",
-                    }).then(response => this.parseResponse(response))
-            .then(responseJson => {
-                let url = '';
-                if (responseJson.response.venue.photos[0].hasOwnProperty('groups') && responseJson.response.venue.photos.groups[0].hasOwnProperty('items')) {
-                    const photo = responseJson.response.venue.photos.groups[0].items[0];
-                    url = photo.prefix + '300x300' + photo.suffix;
-
-                }
-                console.log(url)
-                return url;
+                method: "GET",
             })
+                .then(this.parseResponse)
+                .then(responseJson => {
+                    return responseJson.response.venue;
+                }).catch(error => {
+                    console.error(error);
+                })
         });
     };
 
@@ -133,7 +158,7 @@ class Map extends Component {
         return fetch(url, {
             method: "GET",
         })
-        .then(response => this.parseResponse(response))
+        .then(this.parseResponse)
         .then(responseJson => {
             return responseJson.response.venues[0].id;
         })
@@ -143,11 +168,16 @@ class Map extends Component {
     };
 
     parseResponse = response => {
+        const {handleOpen,isModalOpen} = this.props;
         if (response.status >= 200 && response.status < 300) {
             return response.json();
         } else {
             const error = new Error(response.statusText);
             error.response = response;
+
+            if(!isModalOpen) {
+                handleOpen();
+            }
 
             throw error;
         }
