@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Map from "./view/Map";
@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import ErrorModal from "./view/Modal";
 
 
-class App extends Component {
+class App extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -34,7 +34,6 @@ class App extends Component {
             const {initialPlaces} = this.state;
             this.setState({places: initialPlaces})
         })
-        console.log(this.state.places);
     }
 
     filterByKeyword = keyword => {

@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import scriptLoader from 'react-async-script-loader'
 import {API_KEY} from "../model/constants";
@@ -11,7 +11,7 @@ const mapStyle = {
     height: 1000,
 }
 
-class Map extends Component {
+class Map extends PureComponent {
 
     constructor(props) {
         super(props);
@@ -26,14 +26,16 @@ class Map extends Component {
     componentDidUpdate() {
         const {places} = this.props;
 
-        console.log('++++++++++++++++++++++++++')
+
+        console.log('componentDidUpdatela', places.length)
 
         // reset markers
         this.markers.forEach(marker => {
             marker.setMap(null);
         })
 
-        places.map(place => {
+        places.map((place, index) => {
+            console.log('createMarkerAndInfoWindowindex', index)
             this.createMarkerAndInfoWindow(place);
         })
     }
@@ -45,8 +47,6 @@ class Map extends Component {
 
                 this.loadMap();
                 this.loadNearestLocations();
-
-
             }
             else this.props.onError()
         }
@@ -63,6 +63,7 @@ class Map extends Component {
     }
 
     loadMap = () => {
+        console.log('loadmap')
         this.map = new window.google.maps.Map(this.refs.map, {
             center: MELBOURNE_CENTRAL,
             zoom: 16
@@ -79,12 +80,14 @@ class Map extends Component {
     };
 
     callback = (results, status) => {
+        console.log('callback')
 
         const {setInitialPlaces} = this.props;
         setInitialPlaces(results);
 
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             for (let i = 0; i < results.length; i++) {
+                console.log('createMarkerAndInfoWindow' , i)
                 this.createMarkerAndInfoWindow(results[i]);
             }
         }
@@ -178,16 +181,14 @@ class Map extends Component {
     };
 
     parseResponse = response => {
-        const {handleOpen,isModalOpen} = this.props;
+        const {handleOpen} = this.props;
         if (response.status >= 200 && response.status < 300) {
             return response.json();
         } else {
             const error = new Error(response.statusText);
             error.response = response;
 
-            if(!isModalOpen) {
-                handleOpen();
-            }
+            handleOpen();
 
             throw error;
         }
