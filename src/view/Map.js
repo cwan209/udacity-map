@@ -17,13 +17,16 @@ class Map extends Component {
         super(props);
         this.map = null;
         this.markers = [];
+        this.state = {
+            isMapLoaded : false
+        }
 
     }
 
     componentDidUpdate() {
         const {places} = this.props;
 
-        console.log('componentDidUpdate')
+        console.log('++++++++++++++++++++++++++')
 
         // reset markers
         this.markers.forEach(marker => {
@@ -43,13 +46,20 @@ class Map extends Component {
                 this.loadMap();
                 this.loadNearestLocations();
 
+
             }
             else this.props.onError()
         }
     }
 
-    componentDidMount() {
+    componentDidMount () {
+        const { isScriptLoaded, isScriptLoadSucceed } = this.props
+        if (isScriptLoaded && isScriptLoadSucceed) {
+            this.infowindow = new window.google.maps.InfoWindow();
 
+            this.loadMap();
+            this.loadNearestLocations();
+        }
     }
 
     loadMap = () => {

@@ -74,18 +74,17 @@ class App extends Component {
         return (
             <div className="App">
                 <Grid container>
-                    <Grid item xs={3}>
+                    <Grid item xs={12} sm={3} className="LocationList">
                         <LocationList
                             places={places}
                             filterByKeyword={this.filterByKeyword}
                         />
                     </Grid>
-                    <Grid item xs={9}>
+                    <Grid item xs={12} sm={9} className="Map">
                         <Map
                             places={places}
                             setInitialPlaces={this.setInitialPlaces}
                             handleOpen={this.handleOpen}
-                            isModalOpen={isModalOpen}
                         />
                     </Grid>
                 </Grid>

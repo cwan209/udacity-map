@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, PureComponent} from 'react';
 import PropTypes from 'prop-types';
 import {
     Modal,
@@ -12,7 +12,7 @@ import {
 } from '@material-ui/core';
 import './Modal.css';
 
-class ErrorModal extends Component {
+class ErrorModal extends PureComponent {
 
 
     getModalStyle() {
