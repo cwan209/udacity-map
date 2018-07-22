@@ -1,5 +1,4 @@
 import React, {PureComponent} from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Map from "./view/Map";
 import LocationList from "./view/LocationList";

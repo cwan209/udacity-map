@@ -32,7 +32,7 @@ class LocationList extends Component {
             <div>
                 <FormControl fullWidth className="Filter">
                     <TextField
-                        id="select-currency-native"
+                        id="search-place"
                         label="Please search"
                         // className={classes.textField}
                         value={keyword}
