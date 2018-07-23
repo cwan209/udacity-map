@@ -23,21 +23,29 @@ class Map extends PureComponent {
 
     }
 
-    componentDidUpdate() {
-        const {places} = this.props;
+    componentDidUpdate(prevProps) {
+        const {places, selectedPlace} = this.props;
 
+        // if (selectedPlace !== prevProps.selectedPlace) {
+        if (false) {
+            places.map((place, index) => {
+                if (selectedPlace !== null && place.place_id === selectedPlace.place_id) {
+                    console.log('triggered ' , index)
+                    window.google.maps.event.trigger(this.markers[index], 'click');
+                }
+            })
+        } else {
+            this.markers.forEach(marker => {
+                marker.setMap(null);
+            })
 
-        console.log('componentDidUpdatela', places.length)
+            places.map((place, index) => {
+                this.createMarkerAndInfoWindow(place);
 
+            })
+        }
         // reset markers
-        this.markers.forEach(marker => {
-            marker.setMap(null);
-        })
 
-        places.map((place, index) => {
-            console.log('createMarkerAndInfoWindowindex', index)
-            this.createMarkerAndInfoWindow(place);
-        })
     }
 
     componentWillReceiveProps({isScriptLoaded, isScriptLoadSucceed}) {
@@ -63,7 +71,9 @@ class Map extends PureComponent {
     }
 
     loadMap = () => {
-        console.log('loadmap')
+        // handle google map error
+        window.gm_authFailure = this.props.handleOpen;
+
         this.map = new window.google.maps.Map(this.refs.map, {
             center: MELBOURNE_CENTRAL,
             zoom: 16
@@ -80,7 +90,6 @@ class Map extends PureComponent {
     };
 
     callback = (results, status) => {
-        console.log('callback')
 
         const {setInitialPlaces} = this.props;
         setInitialPlaces(results);

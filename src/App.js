@@ -17,6 +17,7 @@ class App extends PureComponent {
             places: [],
             initialPlaces: [],
             isModalOpen: false,
+            selectedPlace: null
         };
     }
 
@@ -66,8 +67,12 @@ class App extends PureComponent {
         }
     }
 
+    setSelectedPlace = selectedPlace => {
+        this.setState({selectedPlace : selectedPlace})
+    }
+
     render() {
-        const {places, isModalOpen} = this.state;
+        const {places, isModalOpen, selectedPlace} = this.state;
 
         return (
             <div className="App">
@@ -76,6 +81,7 @@ class App extends PureComponent {
                         <LocationList
                             places={places}
                             filterByKeyword={this.filterByKeyword}
+                            setSelectedPlace={this.setSelectedPlace}
                         />
                     </Grid>
                     <Grid item xs={12} sm={9} className="Map">
@@ -83,6 +89,7 @@ class App extends PureComponent {
                             places={places}
                             setInitialPlaces={this.setInitialPlaces}
                             handleOpen={this.handleOpen}
+                            // selectedPlace={selectedPlace}
                         />
                     </Grid>
                 </Grid>

@@ -12,10 +12,6 @@ class LocationList extends Component {
         }
     }
 
-    componentDidMount() {
-
-    }
-
     onChangeKeyword = event => {
         const { filterByKeyword } = this.props;
         const keyword = event.target.value;
@@ -25,7 +21,7 @@ class LocationList extends Component {
     }
 
     render() {
-        const { places } = this.props;
+        const { places, setSelectedPlace } = this.props;
         const { keyword } = this.state;
 
         return (
@@ -34,15 +30,8 @@ class LocationList extends Component {
                     <TextField
                         id="search-place"
                         label="Please search"
-                        // className={classes.textField}
                         value={keyword}
                         onChange={event => this.onChangeKeyword(event)}
-                        // SelectProps={{
-                        //     native: true,
-                        //     MenuProps: {
-                        //         className: classes.menu,
-                        //     },
-                        // }}
                         helperText="Type in place name or type"
                         margin="normal"
                     />
@@ -50,7 +39,7 @@ class LocationList extends Component {
                 <List component="nav">
                 {
                     places.map((place, index) =>
-                        <ListItem button key={index}>
+                        <ListItem button key={index} onClick={() => setSelectedPlace(place)}>
                             <ListItemText primary={place.name} />
                         </ListItem>
                     )
