@@ -89,7 +89,8 @@ class App extends PureComponent {
                             places={places}
                             setInitialPlaces={this.setInitialPlaces}
                             handleOpen={this.handleOpen}
-                            // selectedPlace={selectedPlace}
+                            selectedPlace={selectedPlace}
+                            setSelectedPlace={this.setSelectedPlace}
                         />
                     </Grid>
                 </Grid>

@@ -24,27 +24,29 @@ class Map extends PureComponent {
     }
 
     componentDidUpdate(prevProps) {
-        const {places, selectedPlace} = this.props;
+        const {places, selectedPlace, setSelectedPlace} = this.props;
 
-        // if (selectedPlace !== prevProps.selectedPlace) {
-        if (false) {
+        if (selectedPlace !== prevProps.selectedPlace) {
             places.map((place, index) => {
                 if (selectedPlace !== null && place.place_id === selectedPlace.place_id) {
-                    console.log('triggered ' , index)
+                    console.log('triggered ' , this.markers[index])
                     window.google.maps.event.trigger(this.markers[index], 'click');
                 }
             })
         } else {
+
+            // reset map status
+            setSelectedPlace(null);
             this.markers.forEach(marker => {
+                console.log(marker)
                 marker.setMap(null);
             })
+            this.markers = [];
 
             places.map((place, index) => {
                 this.createMarkerAndInfoWindow(place);
-
             })
         }
-        // reset markers
 
     }
 
@@ -71,6 +73,7 @@ class Map extends PureComponent {
     }
 
     loadMap = () => {
+
         // handle google map error
         window.gm_authFailure = this.props.handleOpen;
 
@@ -96,7 +99,6 @@ class Map extends PureComponent {
 
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             for (let i = 0; i < results.length; i++) {
-                console.log('createMarkerAndInfoWindow' , i)
                 this.createMarkerAndInfoWindow(results[i]);
             }
         }
@@ -151,6 +153,7 @@ class Map extends PureComponent {
             });
 
             this.markers.push(marker);
+
         }).catch(error => {
             console.error(error);
         });
