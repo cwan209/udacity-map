@@ -19,6 +19,6 @@ then visit `localhost:5000`
 
 ## Dependencies
 
-This project used "@material-ui/core" and react-async-script-loader", the packages used will be installed by running `yarn isntall`
+This project used "@material-ui/core" and react-async-script-loader", the packages used will be installed by running `yarn install`
   
 
